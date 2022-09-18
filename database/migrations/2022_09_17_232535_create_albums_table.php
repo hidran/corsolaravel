@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('album_thumb');
             $table->text('description')->nullable();
             $table->foreignId('user_id');
+            $table->foreign('user_id')->on('users')->references('id')
+                ->onDelete('cascade') ->onUpdate('cascade');
             $table->softDeletes();
         });
     }
