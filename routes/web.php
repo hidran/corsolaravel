@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Album;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -14,9 +15,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::get('/users', function () {
-    return  User::paginate(5);
+    return  User::with('albums')->paginate(5);
 });
-
+Route::get('/albums', function () {
+    return  Album::paginate(5);
+});
 Route::get('/', function () {
     return view('welcome');
 });
