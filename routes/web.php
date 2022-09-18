@@ -15,10 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::get('/users', function () {
-    return  User::with('albums')->paginate(5);
+    return User::with('albums')->paginate(5);
 });
 Route::get('/albums', function () {
-    return  Album::paginate(5);
+    return Album::with('photos')->paginate(5);
 });
 Route::get('/', function () {
     return view('welcome');
