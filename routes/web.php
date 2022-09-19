@@ -19,6 +19,7 @@ Route::get('/users', function () {
 });
 //Route::get('/albums', [AlbumsController::class, 'index']);
 Route::resource('/albums', AlbumsController::class);
+Route::get('/albums/{album}/delete', [AlbumsController::class, 'delete']);
 Route::get('/', function () {
     return view('welcome');
 });

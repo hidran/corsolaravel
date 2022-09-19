@@ -94,10 +94,17 @@ class AlbumsController extends Controller
      *
      * @param \App\Models\Album $album
      *
-     * @return \Illuminate\Http\Response
+     * @return int
      */
-    public function destroy(Album $album)
+    public function destroy(int $album)
     {
-        //
+        $sql = 'DELETE FROM albums WHERE id=:id';
+        return DB::delete($sql, ['id' => $album]);
+    }
+
+    public function delete(int $album)
+    {
+        $sql = 'DELETE FROM albums WHERE id=:id';
+        return DB::delete($sql, ['id' => $album]);
     }
 }
