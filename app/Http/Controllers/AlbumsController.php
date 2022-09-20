@@ -25,7 +25,7 @@ class AlbumsController extends Controller
             $where['album_name'] = $request->get('album_name');
             $sql .= ' AND album_name=:album_name';
         }
-        //dd($sql);
+        $sql .= ' ORDER BY id DESC';
         $albums = DB::select($sql, $where);
         return view('albums.albums', ['albums' => $albums]);
 
@@ -38,7 +38,7 @@ class AlbumsController extends Controller
      */
     public function create()
     {
-        //
+        return view('albums.createalbum');
     }
 
     /**
@@ -50,7 +50,15 @@ class AlbumsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->only(['album_name', 'description']);
+        $data['user_id'] = 1;
+        $data['album_thumb'] = '';
+        $query = 'INSERT INTO albums (album_name, description, user_id,album_thumb)  values (:album_name, :description, :user_id,:album_thumb)';
+        $res = DB::insert($query, $data);
+        $message = 'Album ' . $data['album_name'];
+        $message .= $res ? ' created' : ' not created';
+        session()->flash('message', $message);
+        return redirect()->route('albums.index');
     }
 
     /**
