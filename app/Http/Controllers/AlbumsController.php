@@ -95,7 +95,10 @@ class AlbumsController extends Controller
         $data['id'] = $album;
         $query = 'UPDATE albums set album_name=:album_name, description=:description where id=:id';
         $res = Db::update($query, $data);
-        dd($res);
+        $message = 'Album con id= ' . $album;
+        $message .= $res ? ' aggionarato' : ' Non aggiornato';
+        session()->flash('message', $message);
+        return redirect()->route('albums.index');
     }
 
 
