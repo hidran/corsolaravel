@@ -15,18 +15,14 @@ class AlbumsController extends Controller
      */
     public function index(Request $request)
     {
-        $sql = 'select * from albums WHERE 1=1 ';
-        $where = [];
+        $queryBuilder = DB::table('albums')->orderBy('id', 'DESC');
         if ($request->has('id')) {
-            $where['id'] = $request->get('id');
-            $sql .= ' AND ID=:id';
+            $queryBuilder->where('id', '=', $request->input('id'));
         }
         if ($request->has('album_name')) {
-            $where['album_name'] = $request->get('album_name');
-            $sql .= ' AND album_name=:album_name';
+            $queryBuilder->where('album_name', 'like', $request->input('album_name') . '%');
         }
-        $sql .= ' ORDER BY id DESC';
-        $albums = DB::select($sql, $where);
+        $albums = $queryBuilder->get();
         return view('albums.albums', ['albums' => $albums]);
 
     }
