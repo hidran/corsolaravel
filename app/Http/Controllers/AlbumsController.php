@@ -16,7 +16,7 @@ class AlbumsController extends Controller
      */
     public function index(Request $request)
     {
-       
+
 
         $queryBuilder = Album::orderBy('id', 'DESC');
         if ($request->has('id')) {
@@ -116,8 +116,10 @@ class AlbumsController extends Controller
     public function destroy(int $album)
     {
         // $res = DB::table('albums')->delete($album);
-        $res = DB::table('albums')->where('id', $album)->delete();
-        return $res;
+        // $res = Album::where('id',$album)->delete();
+        //   Album::findOrFail($album)->delete();
+        //  Album::destroy($album);
+        return +$album->delete();
 
     }
 
