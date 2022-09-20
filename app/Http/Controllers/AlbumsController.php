@@ -27,7 +27,7 @@ class AlbumsController extends Controller
         }
         //dd($sql);
         $albums = DB::select($sql, $where);
-        return view('albums', ['albums' => $albums]);
+        return view('albums.albums', ['albums' => $albums]);
 
     }
 
@@ -74,7 +74,7 @@ class AlbumsController extends Controller
      */
     public function edit(Album $album)
     {
-        //
+      
     }
 
     /**
