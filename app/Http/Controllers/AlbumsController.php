@@ -65,11 +65,11 @@ class AlbumsController extends Controller
      *
      * @param \App\Models\Album $album
      *
-     * @return \Illuminate\Http\Response
+     * @return \App\Models\Album $album
      */
     public function show(Album $album)
     {
-        //
+        return $album;
     }
 
     /**
