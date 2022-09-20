@@ -115,15 +115,15 @@ class AlbumsController extends Controller
      */
     public function destroy(int $album)
     {
-        $sql = 'DELETE FROM albums WHERE id=:id';
-        return DB::delete($sql, ['id' => $album]);
+        // $res = DB::table('albums')->delete($album);
+        $res = DB::table('albums')->where('id', $album)->delete();
+        return $res;
 
     }
 
     public function delete(int $album)
     {
-        $sql = 'DELETE FROM albums WHERE id=:id';
-        return DB::delete($sql, ['id' => $album]);
+        return $this->destroy($album);
 
     }
 }
