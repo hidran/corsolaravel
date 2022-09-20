@@ -74,7 +74,11 @@ class AlbumsController extends Controller
      */
     public function edit(Album $album)
     {
-      
+        /*
+      $sql = 'select * from albums  where id=:id';
+      $albumEdit = Db::select($sql, ['id' => $album->id]);
+*/
+        return view('albums.editalbum')->withAlbum($album);
     }
 
     /**
