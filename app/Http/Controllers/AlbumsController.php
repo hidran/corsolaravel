@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use DB;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class AlbumsController extends Controller
@@ -11,7 +12,7 @@ class AlbumsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
     public function index(Request $request)
     {
@@ -30,7 +31,6 @@ class AlbumsController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
      */
     public function create()
     {
@@ -42,18 +42,19 @@ class AlbumsController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        $data = $request->only(['album_name', 'description']);
+        $data = request()->only(['album_name', 'description']);
         $data['user_id'] = 1;
-        $data['album_thumb'] = '';
-        $query = 'INSERT INTO albums (album_name, description, user_id,album_thumb)  values (:album_name, :description, :user_id,:album_thumb)';
-        $res = DB::insert($query, $data);
-        $message = 'Album ' . $data['album_name'];
-        $message .= $res ? ' created' : ' not created';
-        session()->flash('message', $message);
+        // da aggiungere se c'è già la colonna album_thumb nella tabella
+        $data['album_thumb'] = '/';
+
+
+        $res = DB::table('albums')->insert($data);
+        $messaggio = $res ? 'Album   ' . $data['album_name'] . ' Created' : 'Album ' . $data['album_name'] . ' was not crerated';
+        session()->flash('message', $messaggio);
         return redirect()->route('albums.index');
     }
 
@@ -89,19 +90,16 @@ class AlbumsController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Album $album
+     * @param int $id
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, int $album)
+    public function update(Request $request, int $id): RedirectResponse
     {
         $data = $request->only(['album_name', 'description']);
-        $data['id'] = $album;
-        $query = 'UPDATE albums set album_name=:album_name, description=:description where id=:id';
-        $res = Db::update($query, $data);
-        $message = 'Album con id= ' . $album;
-        $message .= $res ? ' aggionarato' : ' Non aggiornato';
-        session()->flash('message', $message);
+        $res = DB::table('albums')->where('id', $id)->update($data);
+        $messaggio = $res ? 'Album   ' . $id . ' Updated' : 'Album ' . $id . ' was not updated';
+        session()->flash('message', $messaggio);
         return redirect()->route('albums.index');
     }
 
