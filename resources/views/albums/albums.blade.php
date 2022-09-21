@@ -12,7 +12,7 @@
                     ({{$album->id}}) {{$album->album_name}}
                     @if($album->album_thumb)
                         <div class="mb-3">
-                            <img width="300" src="{{$album->album_thumb}}" alt="{{$album->name}}"
+                            <img width="300" src="{{asset('storage/'.$album->album_thumb)}}" alt="{{$album->name}}"
                                  title="{{$album->name}}">
                         </div>
                     @endif
