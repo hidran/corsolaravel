@@ -35,7 +35,7 @@ class AlbumsController extends Controller
      */
     public function create()
     {
-        return view('albums.createalbum');
+        return view('albums.createalbum')->withAlbum(new Album());
     }
 
     /**
@@ -54,10 +54,31 @@ class AlbumsController extends Controller
         $album->user_id = 1;
         $album->album_thumb = '/';
         $res = $album->save();
+        if ($request->hasFile('album_thumb')) {
+
+            $this->processFile($request, $album);
+            $res = $album->save();
+        }
         //$res =  Album::create($data);
         $messaggio = $res ? 'Album   ' . $data['album_name'] . ' Created' : 'Album ' . $data['album_name'] . ' was not crerated';
         session()->flash('message', $messaggio);
         return redirect()->route('albums.index');
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Album $album
+     *
+     * @return void
+     */
+    public function processFile(Request $request, Album $album): void
+    {
+        $file = $request->file('album_thumb');
+
+        $filename = $album->id . '.' . $file->extension();
+        $thumbnail = $file->storeAs(config('filesystems.album_thumbnail_dir'), $filename,
+            ['disk' => 'public']);
+        $album->album_thumb = $thumbnail;
     }
 
     /**
@@ -103,19 +124,13 @@ class AlbumsController extends Controller
         $album->description = $data['description'];
         if ($request->hasFile('album_thumb')) {
 
-            $file = $request->file('album_thumb');
-
-            $filename = $album->id . '.' . $file->extension();
-            $thumbnail = $file->storeAs(config('filesystems.album_thumbnail_dir'), $filename,
-                ['disk' => 'public']);
-            $album->album_thumb = $thumbnail;
+            $this->processFile($request, $album);
         }
         $res = $album->save();
         $messaggio = $res ? 'Album   ' . $album->album_name . ' Updated' : 'Album ' . $album->album_name . ' was not updated';
         session()->flash('message', $messaggio);
         return redirect()->route('albums.index');
     }
-
 
     /**
      * Remove the specified resource from storage.
