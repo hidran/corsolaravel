@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Album;
+use App\Models\Photo;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Storage;
@@ -150,4 +151,9 @@ class AlbumsController extends Controller
         return $res;
     }
 
+    public function getImages(Album $album)
+    {
+        return Photo::wherealbumId($album->id)->get();
+
+    }
 }
