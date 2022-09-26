@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AlbumsController;
+use App\Http\Controllers\PhotosController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -12,4 +13,4 @@ Route::get('/', [AlbumsController::class, 'index']);
 Route::get('/albums/{album}/images', [AlbumsController::class, 'getImages'])
     ->name('albums.images');
 
-
+Route::resource('photos', PhotosController::class);
