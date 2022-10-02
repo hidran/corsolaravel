@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AlbumRequest;
 use App\Models\Album;
 use App\Models\Photo;
 use Illuminate\Http\RedirectResponse;
@@ -44,13 +45,13 @@ class AlbumsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \App\Http\Requests\AlbumRequest $request
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(AlbumRequest $request): RedirectResponse
     {
-        $data = $request->only(['album_name', 'description']);
+        $data = $request->safe(['album_name', 'description']);
         $album = new Album();
         $album->album_name = $data['album_name'];
         $album->description = $data['description'];
@@ -115,12 +116,12 @@ class AlbumsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
+     * @param \App\Http\Requests\AlbumRequest $request
+     * @param \App\Models\Album $album
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Album $album): RedirectResponse
+    public function update(AlbumRequest $request, Album $album): RedirectResponse
     {
         $data = $request->only(['album_name', 'description']);
         $album->album_name = $data['album_name'];
