@@ -7,6 +7,7 @@ use App\Models\Photo;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Storage;
 
 class PhotosController extends Controller
 {
@@ -86,12 +87,13 @@ class PhotosController extends Controller
      */
     public function processFile(Request $request, Photo $photo): void
     {
+
         $disk = config('filesystems.default');
         $file = $request->file('img_path');
-        $name = preg_replace('@[^a-z]i@', '_', $photo->name);
+        $name = preg_replace('@[^a-z0-9]@i', '_', $photo->name);
+
         $filename = $name . '.' . $file->extension();
-        $thumbnail = $file->storeAs(config('filesystems.img_dir'
-            . $photo->album_id), $filename,
+        $thumbnail = $file->storeAs(config('filesystems.img_dir') . $photo->album_id, $filename,
             ['disk' => $disk]);
         $photo->img_path = $thumbnail;
     }
@@ -138,11 +140,12 @@ class PhotosController extends Controller
         $data = $request->only(['name', 'description', 'album_id']);
         $photo->name = $data['name'];
         $photo->description = $data['description'];
+        $photo->album_id = $data['album_id'];
         if ($request->hasFile('img_path')) {
 
             $this->processFile($request, $photo);
         }
-        $photo->album_id = $data['album_id'];
+
         $res = $photo->save();
 
         $messaggio = $res ? 'Photo   ' . $photo->name . ' Updated' : 'Album ' . $photo->name . ' was not updated';
@@ -159,6 +162,10 @@ class PhotosController extends Controller
      */
     public function destroy(Photo $photo): int
     {
-        return $photo->delete();
+        $res = $photo->delete();
+        if ($res && $photo->img_path) {
+            Storage::delete($photo->img_path);
+        }
+        return $res;
     }
 }

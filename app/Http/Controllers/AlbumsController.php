@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AlbumRequest;
 use App\Models\Album;
 use App\Models\Photo;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Storage;
@@ -14,11 +15,10 @@ class AlbumsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\View\View
+     * @return View
      */
     public function index(Request $request)
     {
-
         $albumsPerPage = config('filesystems.albums_per_page');
         $queryBuilder = Album::orderBy('id', 'DESC')
             ->withCount('photos');
@@ -30,7 +30,6 @@ class AlbumsController extends Controller
         }
         $albums = $queryBuilder->paginate($albumsPerPage);
         return view('albums.albums', ['albums' => $albums]);
-
     }
 
     /**
@@ -45,7 +44,7 @@ class AlbumsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\AlbumRequest $request
+     * @param AlbumRequest $request
      *
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -59,7 +58,6 @@ class AlbumsController extends Controller
         $album->album_thumb = '/';
         $res = $album->save();
         if ($request->hasFile('album_thumb')) {
-
             $this->processFile($request, $album);
             $res = $album->save();
         }
@@ -80,8 +78,11 @@ class AlbumsController extends Controller
         $file = $request->file('album_thumb');
 
         $filename = $album->id . '.' . $file->extension();
-        $thumbnail = $file->storeAs(config('filesystems.album_thumbnail_dir'), $filename,
-            ['disk' => 'public']);
+        $thumbnail = $file->storeAs(
+            config('filesystems.album_thumbnail_dir'),
+            $filename,
+            ['disk' => 'public']
+        );
         $album->album_thumb = $thumbnail;
     }
 
@@ -113,13 +114,11 @@ class AlbumsController extends Controller
         return view('albums.editalbum')->withAlbum($album);
     }
 
+
     /**
-     * Update the specified resource in storage.
-     *
-     * @param \App\Http\Requests\AlbumRequest $request
-     * @param \App\Models\Album $album
-     *
-     * @return \Illuminate\Http\RedirectResponse
+     * @param AlbumRequest $request
+     * @param Album $album
+     * @return RedirectResponse
      */
     public function update(AlbumRequest $request, Album $album): RedirectResponse
     {
@@ -127,7 +126,6 @@ class AlbumsController extends Controller
         $album->album_name = $data['album_name'];
         $album->description = $data['description'];
         if ($request->hasFile('album_thumb')) {
-
             $this->processFile($request, $album);
         }
         $res = $album->save();
@@ -158,6 +156,5 @@ class AlbumsController extends Controller
         $imgPerPage = config('filesystems.img_per_page');
         $images = Photo::wherealbumId($album->id)->latest()->paginate($imgPerPage);
         return view('images.albumimages', compact('album', 'images'));
-
     }
 }

@@ -10,13 +10,14 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
-    <link rel="stylesheet" href="/css/app.css">
+
     <style>
         body {
             padding: 70px 15px 0;
         }
 
     </style>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="d-flex flex-column h-100">
 
@@ -24,7 +25,7 @@
     <!-- Fixed navbar -->
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Fixed navbar</a>
+            <a class="navbar-brand" href="#">PHOTOGALLERY</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
                     aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -48,6 +49,35 @@
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
+                <ul class="nav navbar-nav navbar-right">
+                    @guest
+                        <li>
+                            <a class="nav-link" href="{{route('login')}}">Login</a>
+                        </li>
+                        <li>
+                            <a class="nav-link" href="{{route('register')}}">Register</a>
+                        </li>
+                    @endguest
+                    @auth
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle  nav-link" data-bs-toggle="dropdown" role="button"
+                               aria-expanded="false">
+                                {{ Auth::user()->name }} <span class="caret"></span>
+                            </a>
+
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+
+                                    <form id="logout-form" action="{{ route('logout')}}" method="POST">
+                                        {{ csrf_field() }}
+                                        <button class="btn btn-default">Logout</button>
+                                    </form>
+                                </li>
+
+                            </ul>
+                        </li>
+                    @endauth
+                </ul>
             </div>
         </div>
     </nav>
@@ -55,6 +85,7 @@
 
 <main role="main" class="container">
     @yield('content')
+    {{$slot ?? ''}}
 </main><!-- /.container -->
 @section('footer')
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>

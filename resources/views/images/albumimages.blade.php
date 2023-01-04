@@ -53,6 +53,7 @@
         $('document').ready(function () {
 
             $('table').on('click', 'a.btn-danger', function (ele) {
+                console.log(ele)
                 ele.preventDefault();
                 var urlImg = $(this).attr('href');
                 // we add another parentNode because of the div
