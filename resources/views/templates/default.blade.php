@@ -16,7 +16,7 @@
         }
 
         table.albums td a.btn {
-            width: 80px;
+            min-width: 60px;
         }
     </style>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
